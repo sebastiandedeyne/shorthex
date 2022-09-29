@@ -1,7 +1,10 @@
 import test from "node:test";
 import assert from "node:assert";
+import { findNearestShorthandCode } from "./hex.js";
 
-test("synchronous passing test", (t) => {
-  // This test passes because it does not throw an exception.
-  assert.strictEqual(1, 1);
+test("it finds the nearest shorthand hex", () => {
+  assert.strictEqual("#cdd", findNearestShorthandCode("#d3d9dc"));
+  assert.strictEqual("#efc", findNearestShorthandCode("#eeffcc"));
+  assert.strictEqual("#cdd", findNearestShorthandCode("#cdd"));
+  assert.strictEqual(null, findNearestShorthandCode("#cddcddcdd"));
 });
