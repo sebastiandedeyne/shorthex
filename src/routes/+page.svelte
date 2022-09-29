@@ -9,7 +9,11 @@
 
   $: match = findNearestShorthandCode(hex);
 
-  function onInput(event) {
+  function handleSubmit(event) {
+    event.preventDefault();
+  }
+
+  function handleInput(event) {
     if (event.target.value === "") {
       hex = "";
     } else if (event.target.value[0] !== "#") {
@@ -19,7 +23,7 @@
     }
   }
 
-  function onFocus(event) {
+  function handleFocus(event) {
     window.requestAnimationFrame(() => {
       event.target.setSelectionRange(1, event.target.value.length);
     });
@@ -27,34 +31,33 @@
 </script>
 
 <main>
-  <input
-    class="color"
-    style:background-color={match ? hex : "#ddd"}
-    value={hex}
-    on:input={onInput}
-    on:focus={onFocus}
-  />
+  <form on:submit={handleSubmit}>
+    <input
+      class="color"
+      style:background-color={match ? hex : "#ddd"}
+      value={hex}
+      on:input={handleInput}
+      on:focus={handleFocus}
+      name="c"
+      autocomplete="off"
+    />
+  </form>
   <div class="color" style:background-color={match || "#ddd"}>
     {match || ""}
   </div>
   <h1>Short Hex Codes</h1>
-  <p>
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis adipisci
-    fugit quaerat assumenda laudantium quos ipsa. Quia cupiditate odio a animi
-    repellendus? Quo ipsa aliquid magni aliquam odio cupiditate quam.
-  </p>
+  <p></p>
 </main>
 
 <style>
   @import url("https://rsms.me/inter/inter.css");
 
   :global(:root) {
-    --padding: 1rem;
+    --padding: 2rem;
   }
 
   :global(html) {
     font-family: "Inter", sans-serif;
-    font-size: 4vmin;
   }
 
   :global(body) {
@@ -74,12 +77,16 @@
     text-transform: uppercase;
     font-size: 0.9em;
     letter-spacing: 0.03em;
-    margin-top: var(--padding);
+    margin-top: calc(var(--padding) / 2);
   }
 
   p {
-    margin-top: var(--padding);
+    margin-top: calc(var(--padding) / 2);
     font-weight: 500;
+  }
+
+  form {
+    display: contents;
   }
 
   input {
@@ -101,6 +108,6 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    font-size: 2rem;
+    font-size: 4rem;
   }
 </style>
