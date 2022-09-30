@@ -8,7 +8,7 @@ export function findNearestShorthandCode(hex) {
   const shortHexMatch = hex.match(/^([0-9a-f])([0-9a-f])([0-9a-f])$/);
 
   if (shortHexMatch) {
-    return `#${shortHexMatch[0]}`;
+    return `${shortHexMatch[0]}`;
   }
 
   const match = hex.match(
@@ -22,7 +22,7 @@ export function findNearestShorthandCode(hex) {
   match.shift();
   const [r, g, b] = match.map(toShortHex);
 
-  return `#${r}${g}${b}`;
+  return `${r}${g}${b}`;
 }
 
 /**
