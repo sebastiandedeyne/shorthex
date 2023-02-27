@@ -5,12 +5,14 @@
 <slot />
 
 <style>
+  @import url("https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap");
+
   :global(:root) {
-    --padding: 2rem;
+    --padding: 4rem;
   }
 
   :global(html) {
-    font-family: system-ui, sans-serif;
+    font-family: Rubik, system-ui, sans-serif;
     font-size: 14px;
   }
 
