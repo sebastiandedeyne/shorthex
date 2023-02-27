@@ -1,6 +1,6 @@
 <script>
-  import "../reset.css";
-  import { findNearestShorthandCode } from "../lib/hex";
+  import { onMount } from "svelte";
+  import { toNearestShortHex, random } from "../lib/hex";
 
   /** @type {import('./$types').PageData} */
   export let data;
@@ -8,16 +8,24 @@
   let hex = data.hex;
   let input = null;
 
-  $: match = findNearestShorthandCode(hex);
+  let loaded = false;
+
+  onMount(() => {
+    loaded = true;
+  });
+
+  $: match = toNearestShortHex(hex);
+
+  function randomize() {
+    hex = random();
+  }
 
   function handleSubmit(event) {
     event.preventDefault();
   }
 
   function handleInput(event) {
-    if (event.target.value === "") {
-      hex = "";
-    } else if (event.target.value[0] === "#") {
+    if (event.target.value[0] === "#") {
       hex = event.target.value.substr(1);
     } else {
       hex = event.target.value;
@@ -32,6 +40,7 @@
 
 <main>
   <form
+    id="form"
     class="color"
     style:background-color={match ? `#${hex}` : "#ddd"}
     on:submit={handleSubmit}
@@ -46,37 +55,43 @@
       name="c"
       autocomplete="off"
     />
+    {#if !loaded}
+      <p class="no-js">Hit <kbd>enter</kbd> to submit</p>
+    {/if}
   </form>
-  <div class="color" style:background-color={match ? `#${match}` : "#ddd"}>
+  <div class="color" style:--background-color={match ? `#${match}` : "#ddd"}>
     {#if match}
       <span class="hash">#</span>{match || ""}
     {/if}
   </div>
-  <h1>Short Hex Codes</h1>
-  <p />
+  <article>
+    <h1>Short Hex Codes</h1>
+    <p>
+      Enter or paste a 6-digit hex color code to find the nearest rounded
+      3-digit equivalent. <br /> Need inspiration?
+      <button
+        type="submit"
+        form="random"
+        name="c"
+        value={random()}
+        on:click={randomize}>Generate a random value</button
+      > instead.
+    </p>
+    <p>
+      This applet is built with <a href="https://svelte.dev/">Svelte</a> &
+      <a href="https://kit.svelte.dev/">SvelteKit</a>. It's progressively
+      enhanced and works with or without JavaScript.
+    </p>
+    <form hidden id="random" on:submit={handleSubmit} />
+  </article>
 </main>
 
 <style>
-  @import url("https://rsms.me/inter/inter.css");
-
-  :global(:root) {
-    --padding: 2rem;
-  }
-
-  :global(html) {
-    font-family: "Inter", sans-serif;
-  }
-
-  :global(body) {
-    padding: var(--padding);
-    line-height: 1.4;
-  }
-
   main {
-    height: calc(100vh - var(--padding) * 2);
+    height: 100vh;
     display: grid;
-    grid-template-columns: 1fr 2fr;
-    grid-template-rows: 1fr min-content;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr auto;
   }
 
   input {
@@ -101,22 +116,70 @@
   }
 
   .color {
+    --background-color: red;
+
+    position: relative;
     display: flex;
     align-items: center;
-    font-size: 4rem;
-    padding-left: calc(var(--padding) * 2);
+    font-size: 3rem;
+    padding-left: var(--padding);
+    background-color: var(--background-color);
+    font-family: "Berkeley Mono";
+  }
+
+  article {
+    padding: var(--padding);
   }
 
   h1 {
     font-weight: bold;
     text-transform: uppercase;
-    font-size: 0.9em;
-    letter-spacing: 0.03em;
-    margin-top: calc(var(--padding) / 2);
   }
 
-  p {
-    margin-top: calc(var(--padding) / 2);
-    font-weight: 500;
+  button {
+    -webkit-appearance: none;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    font: inherit;
+    text-decoration: underline;
+  }
+
+  button:active {
+    transform: translateY(1px);
+  }
+
+  article > * + * {
+    margin-top: 1rem;
+  }
+
+  a,
+  button {
+    color: #444;
+  }
+
+  .no-js {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: var(--padding);
+    font-size: 13px;
+    border: 1px solid currentColor;
+    border-bottom-width: 2px;
+    opacity: 0;
+    padding: 0.125em 0.375em;
+    border-radius: 0.25em;
+    animation: no-js 0.15s;
+    animation-delay: 1s;
+    animation-fill-mode: forwards;
+  }
+
+  @keyframes no-js {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 0.5;
+    }
   }
 </style>
