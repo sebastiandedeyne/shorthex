@@ -11,8 +11,8 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "@sveltejs/adapter-vercel": "^2.1.1",
-    "@sveltejs/kit": "^1.8.5",
+    "@sveltejs/adapter-netlify": "^2.0.5",
+    "@sveltejs/kit": "^1.8.8",
     "husky": "^8.0.3",
     "prettier": "^2.8.4",
     "prettier-plugin-svelte": "^2.9.0",
