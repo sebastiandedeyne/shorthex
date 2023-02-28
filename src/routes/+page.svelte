@@ -13,12 +13,7 @@
   $: match = toNearestShortHex(hex);
   $: isDark = match ? lightness(hex) < 0.25 : false;
 
-  let loaded = false;
   let copied = false;
-
-  onMount(() => {
-    loaded = true;
-  });
 
   function randomize() {
     hex = random();
@@ -65,9 +60,6 @@
         name="c"
         autocomplete="off"
       />
-      {#if !loaded}
-        <p class="alert no-js">Hit <kbd>enter</kbd> to submit</p>
-      {/if}
     </form>
   </div>
   <div class="right-blob" style:--fill={match ? `#${match}` : "#ddd"}>
@@ -184,8 +176,7 @@
     display: flex;
     align-items: center;
     font-size: 2rem;
-    /** @todo Embed font */
-    font-family: "Berkeley Mono", monospace;
+    font-family: "Space Mono", monospace;
     pointer-events: auto;
   }
 
@@ -281,20 +272,5 @@
 
   .color--dark .alert {
     border-color: white;
-  }
-
-  .no-js {
-    animation: no-js 0.15s;
-    animation-delay: 1s;
-    animation-fill-mode: forwards;
-  }
-
-  @keyframes no-js {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 0.5;
-    }
   }
 </style>
