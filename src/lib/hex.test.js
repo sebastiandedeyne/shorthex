@@ -1,12 +1,12 @@
 import { test } from "uvu";
 import * as assert from "uvu/assert";
-import { toNearestShortHex, random } from "./hex.js";
+import { lightness, random, toNearestShortHex } from "./hex.js";
 
 test("it finds the nearest shorthand hex", () => {
-  assert.equal("cdd", toNearestShortHex("d3d9dc"));
-  assert.equal("efc", toNearestShortHex("eeffcc"));
-  assert.equal("cdd", toNearestShortHex("cdd"));
-  assert.equal(null, toNearestShortHex("cddcddcdd"));
+  assert.equal(toNearestShortHex("d3d9dc"), "cdd");
+  assert.equal(toNearestShortHex("eeffcc"), "efc");
+  assert.equal(toNearestShortHex("cdd"), "cdd");
+  assert.equal(toNearestShortHex("cddcddcdd"), null);
 });
 
 test("it generates a random hex", () => {
@@ -16,6 +16,14 @@ test("it generates a random hex", () => {
       /^([0-9a-f][0-9a-f])([0-9a-f][0-9a-f])([0-9a-f][0-9a-f])$/
     );
   }
+});
+
+test("it calculates lightness", () => {
+  assert.equal(lightness("000"), 0);
+  assert.equal(lightness("000000"), 0);
+  assert.equal(lightness("fff"), 1);
+  assert.equal(lightness("ffffff"), 1);
+  assert.equal(Math.round(lightness("a2cd5f") * 100) / 100, 0.6);
 });
 
 test.run();
