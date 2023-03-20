@@ -1,8 +1,7 @@
 <script>
   import { tweens } from "../lib/blob";
 
-  const [p1, p2, p3, p4, p5, p6] = tweens({
-    amount: 6,
+  const [p1, p2, p3, p4, p5, p6] = tweens(6, {
     slack: 1500,
     volatility: 30,
   });

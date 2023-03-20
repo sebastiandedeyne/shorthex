@@ -4,7 +4,6 @@
   import LeftBlob from "../components/LeftBlob.svelte";
   import RightBlob from "../components/RightBlob.svelte";
 
-  /** @type {import('./$types').PageData} */
   export let data;
 
   let hex = data.hex;
@@ -32,8 +31,9 @@
   }
 
   function focusInput(event) {
-    input.focus();
-    input.setSelectionRange(0, input.value.length);
+    window.setTimeout(() => {
+      input.setSelectionRange(0, input.value.length);
+    });
   }
 
   async function copyToClipboard() {
@@ -47,10 +47,13 @@
   }
 </script>
 
-<main class={isDark ? "color--dark" : ""}>
-  <div class="left-blob" style:--fill={match ? `#${hex}` : "#ddd"}>
-    <LeftBlob />
-    <form class="left-color" on:submit={handleSubmit} on:click={focusInput}>
+<main
+  class={isDark ? "color--dark" : ""}
+  style:--selection-color={match ? `#${match}` : "#ddd"}
+>
+  <section class="input">
+    <LeftBlob --fill={match ? `#${hex}` : "#ddd"} />
+    <form class="input-color" on:submit={handleSubmit}>
       <span class="hash">#</span>
       <input
         bind:this={input}
@@ -61,18 +64,18 @@
         autocomplete="off"
       />
     </form>
-  </div>
-  <div class="right-blob" style:--fill={match ? `#${match}` : "#ddd"}>
-    <RightBlob />
-    <div class="right-color" on:click={copyToClipboard}>
+  </section>
+  <section class="output">
+    <RightBlob --fill={match ? `#${match}` : "#ddd"} />
+    <button class="output-color" on:click={copyToClipboard}>
       {#if match}
         <span class="hash">#</span>{match || ""}
       {/if}
       {#if copied}
-        <p class="alert">Copied to clipboard ✓</p>
+        <p class="alert">Copied!</p>
       {/if}
-    </div>
-  </div>
+    </button>
+  </section>
   <article>
     <h1>Short Hex Codes</h1>
     <p>
@@ -100,55 +103,59 @@
   :root {
     --blob-width: 80vw;
 
-    --left-blob-top: 14vw;
-    --left-blob-left: -2vw;
-    --left-color-top: 32vw;
-    --left-color-left: 9vw;
+    --input-top: 14vw;
+    --input-left: -2vw;
+    --input-color-top: 32vw;
+    --input-color-left: 9vw;
 
-    --right-blob-top: 7vw;
-    --right-blob-left: 27vw;
-    --right-color-top: 39vw;
-    --right-color-left: 50vw;
+    --output-blob-top: 7vw;
+    --output-blob-left: 27vw;
+    --output-color-top: 39vw;
+    --output-color-left: 50vw;
   }
 
   @media (min-width: 1000px) {
     :root {
       --blob-width: 60vw;
 
-      --left-blob-top: -6vw;
-      --left-blob-left: 13vw;
-      --left-color-top: 25vw;
-      --left-color-left: 9vw;
+      --input-top: -6vw;
+      --input-left: 13vw;
+      --input-color-top: 25vw;
+      --input-color-left: 9vw;
 
-      --right-blob-top: -13vw;
-      --right-blob-left: 22vw;
-      --right-color-top: 32vw;
-      --right-color-left: 40vw;
+      --output-blob-top: -13vw;
+      --output-blob-left: 22vw;
+      --output-color-top: 32vw;
+      --output-color-left: 40vw;
     }
   }
 
-  .left-blob,
-  .right-blob {
+  ::-moz-selection {
+    background: var(--selection-color);
+  }
+
+  ::selection {
+    background: var(--selection-color);
+  }
+
+  .input,
+  .output {
     position: absolute;
     width: var(--blob-width);
     pointer-events: none;
   }
 
-  svg {
-    z-index: -1;
+  .input {
+    top: var(--input-top);
+    left: var(--input-left);
   }
 
-  .left-blob {
-    top: var(--left-blob-top);
-    left: var(--left-blob-left);
+  .output {
+    top: var(--output-blob-top);
+    left: var(--output-blob-left);
   }
 
-  .right-blob {
-    top: var(--right-blob-top);
-    left: var(--right-blob-left);
-  }
-
-  input {
+  .input input {
     display: block;
     width: 6ch;
     font: inherit;
@@ -158,20 +165,20 @@
     border-bottom: 2px solid rgba(0, 0, 0, 0.25);
   }
 
-  .color--dark input {
+  .color--dark .input input {
     border-bottom-color: rgba(255, 255, 255, 0.25);
   }
 
-  input:focus {
+  .input input:focus {
     outline: none;
   }
 
-  form {
+  .input form {
     cursor: text;
   }
 
-  .left-color,
-  .right-color {
+  .input-color,
+  .output-color {
     position: absolute;
     display: flex;
     align-items: center;
@@ -180,24 +187,25 @@
     pointer-events: auto;
   }
 
-  .color--dark .left-color,
-  .color--dark .right-color {
+  .color--dark .input-color,
+  .color--dark .output-color {
     color: white;
   }
 
-  .left-color {
-    top: var(--left-color-top);
-    left: var(--left-color-left);
+  .input-color {
+    top: var(--input-color-top);
+    left: var(--input-color-left);
   }
 
-  .right-color {
-    top: var(--right-color-top);
-    left: var(--right-color-left);
+  .output-color {
+    cursor: copy;
+    top: var(--output-color-top);
+    left: var(--output-color-left);
   }
 
   @media (min-width: 600px) {
-    .left-color,
-    .right-color {
+    .input-color,
+    .output-color {
       font-size: 2.5rem;
     }
   }
@@ -207,14 +215,26 @@
     margin-right: 0.25ch;
   }
 
-  .color--dark .hash {
+  .alert {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    transform: translateX(2rem) translateY(100%);
+    white-space: nowrap;
+    font-size: 13px;
+    opacity: 0.75;
+    line-height: 1;
+  }
+
+  .color--dark .alert {
+    border-color: white;
   }
 
   article {
     position: absolute;
     top: 85vw;
-    left: calc(var(--left-blob-left) + var(--left-color-left));
-    right: calc(var(--left-blob-left) + var(--left-color-left));
+    left: calc(var(--input-left) + var(--input-color-left));
+    right: calc(var(--input-left) + var(--input-color-left));
     padding-bottom: 5vw;
     max-width: 86vw;
   }
@@ -238,7 +258,6 @@
     padding: 0;
     background: transparent;
     font: inherit;
-    text-decoration: underline;
   }
 
   button:active {
@@ -249,28 +268,12 @@
     margin-top: 1rem;
   }
 
-  a,
-  button {
+  article a,
+  article button {
     color: #444;
   }
 
-  .alert {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    transform: translateY(100%);
-    white-space: nowrap;
-    font-size: 13px;
-    border: 1px solid black;
-    border-bottom-width: 2px;
-    opacity: 0.5;
-    padding: 0.125em 0.375em;
-    background-color: #fff2;
-    border-radius: 0.25em;
-    font-family: Rubik, system-ui, sans-serif;
-  }
-
-  .color--dark .alert {
-    border-color: white;
+  article button {
+    text-decoration: underline;
   }
 </style>
