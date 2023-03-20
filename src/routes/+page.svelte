@@ -47,10 +47,7 @@
   }
 </script>
 
-<main
-  class={isDark ? "color--dark" : ""}
-  style:--selection-color={match ? `#${match}` : "#ddd"}
->
+<main class={isDark ? "color--dark" : ""}>
   <section class="input">
     <LeftBlob --fill={match ? `#${hex}` : "#ddd"} />
     <form class="input-color" on:submit={handleSubmit}>
@@ -128,14 +125,6 @@
       --output-color-top: 32vw;
       --output-color-left: 40vw;
     }
-  }
-
-  ::-moz-selection {
-    background: var(--selection-color);
-  }
-
-  ::selection {
-    background: var(--selection-color);
   }
 
   .input,
